@@ -13,6 +13,9 @@
 1. Run selenium server
 > java -jar selenium-server-standalone-3.0.1.jar
 
+1.1  Set port
+> java -jar selenium-server-standalone-3.0.1.jar -port 4445
+
 2. Run test from mocha
 > mocha path/to/test.js
 

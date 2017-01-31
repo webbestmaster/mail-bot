@@ -17,7 +17,7 @@ let SERVER_URL = G_MAIL_LOGIN.URL_LOGIN;
 let WEB_DRIVER_SERVER_URL;
 let CAPABILITES;
 
-const isMobile = true;
+const isMobile = false;
 
 if (isMobile) {
     WEB_DRIVER_SERVER_URL = 'http://localhost:8080/wd/hub';
@@ -54,42 +54,43 @@ describe('Tests', function () {
 
     describe('Gmail logins', () => {
 
-        mailList.filter(mailData => {
+        mailList
+/*
+            .filter((mailData, i) => {
+                let mailList = ['mikka.salonen88@gmail.com', 'mila.yovo1989@gmail.com'];
+                return mailList.indexOf(mailData.mail) !== -1 || 1;
+            })
+*/
+            .forEach(mailData => {
 
-            let mailList = ['mikka.salonen88@gmail.com', 'mila.yovo1989@gmail.com'];
+                it('Gmail login for ' + mailData.mail, done => {
 
-            return mailList.indexOf(mailData.mail) !== -1 || 1;
+                    browser.manage().deleteAllCookies();
 
-        }).forEach(mailData => {
+                    browser.get(SERVER_URL);
 
-            it('Gmail login for ' + mailData.mail, done => {
+                    browser.findElement(byCss(G_MAIL_LOGIN.INPUT_E_MAIL)).sendKeys(mailData.mail);
+                    browser.findElement(byCss(G_MAIL_LOGIN.BTN_NEXT)).click();
 
-                browser.manage().deleteAllCookies();
+                    let passwordLocator = byCss(G_MAIL_LOGIN.INPUT_PASSWORD);
 
-                browser.get(SERVER_URL);
+                    // check element is localed (exist on page)
+                    browser.wait(until.elementLocated(passwordLocator), 1e3, 'Could not locate the child element within the time specified');
 
-                browser.findElement(byCss(G_MAIL_LOGIN.INPUT_E_MAIL)).sendKeys(mailData.mail);
-                browser.findElement(byCss(G_MAIL_LOGIN.BTN_NEXT)).click();
+                    // check element is displayed on page
+                    browser.wait(browser.findElement(passwordLocator).isDisplayed(), 1000);
 
-                let passwordLocator = byCss(G_MAIL_LOGIN.INPUT_PASSWORD);
+                    browser.findElement(passwordLocator).sendKeys(mailData.password);
+                    browser.findElement(byCss(G_MAIL_LOGIN.BTN_SING_IN)).click();
+                    browser.get(G_MAIL_LOGIN.URL_G_MAIL);
 
-                // check element is localed (exist on page)
-                browser.wait(until.elementLocated(passwordLocator), 1e3, 'Could not locate the child element within the time specified');
+                    browser.takeScreenshot()
+                        .then(image => util.writeImage(mailData.mail, image))
+                        .then(done);
 
-                // check element is displayed on page
-                browser.wait(browser.findElement(passwordLocator).isDisplayed(), 1000);
+                });
 
-                browser.findElement(passwordLocator).sendKeys(mailData.password);
-                browser.findElement(byCss(G_MAIL_LOGIN.BTN_SING_IN)).click();
-                browser.get(G_MAIL_LOGIN.URL_G_MAIL);
-
-                browser.takeScreenshot()
-                    .then(image => util.writeImage(mailData.mail, image))
-                    .then(done);
-
-            });
-
-        })
+            })
 
     });
 
