@@ -1,6 +1,11 @@
 /*global describe, it, beforeEach, afterEach */
 
 "use strict";
+
+let webdriver = require('selenium-webdriver');
+let until = webdriver.until;
+let byCss = webdriver.By.css;
+
 const mailList = require('./../data/mails.json');
 const util = require('./../data/util');
 
@@ -8,7 +13,19 @@ const CONSTANT = require('./../data/constant');
 let G_MAIL_LOGIN = CONSTANT.G_MAIL_LOGIN;
 
 let SERVER_URL = G_MAIL_LOGIN.URL_LOGIN;
-let WEB_DRIVER_SERVER_URL = 'http://localhost:4444/wd/hub';
+
+let WEB_DRIVER_SERVER_URL;
+let CAPABILITES;
+
+const isMobile = true;
+
+if (isMobile) {
+    WEB_DRIVER_SERVER_URL = 'http://localhost:8080/wd/hub';
+    CAPABILITES = {browserName: ''};
+} else {
+    WEB_DRIVER_SERVER_URL = 'http://localhost:4444/wd/hub';
+    CAPABILITES = webdriver.Capabilities.chrome();
+}
 
 describe('Tests', function () {
 
@@ -16,15 +33,13 @@ describe('Tests', function () {
     this.timeout(250e3);
 
     let browser;
-    let webdriver = require('selenium-webdriver');
-    let until = webdriver.until;
-    let byCss = webdriver.By.css;
 
     beforeEach(() => {
             browser = new webdriver
+
                 .Builder()
                 .usingServer(WEB_DRIVER_SERVER_URL)
-                .withCapabilities(webdriver.Capabilities.chrome())
+                .withCapabilities(CAPABILITES)
                 .build();
 
             browser.manage().deleteAllCookies();
