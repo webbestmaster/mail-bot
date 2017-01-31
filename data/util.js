@@ -4,7 +4,7 @@ let G_MAIL_LOGIN = CONSTANT.G_MAIL_LOGIN;
 
 module.exports = {
 
-    writeImage: function (pathForImage, image) {
+    writeScreenshot: function (pathForImage, image) {
 
 
         return new Promise((resolve, reject) =>

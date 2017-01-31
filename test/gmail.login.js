@@ -15,17 +15,29 @@ let G_MAIL_LOGIN = CONSTANT.G_MAIL_LOGIN;
 let SERVER_URL = G_MAIL_LOGIN.URL_LOGIN;
 
 let WEB_DRIVER_SERVER_URL;
-let CAPABILITES;
+let CAPABILITIES;
 
 const isMobile = false;
 
 if (isMobile) {
     WEB_DRIVER_SERVER_URL = 'http://localhost:8080/wd/hub';
-    CAPABILITES = {browserName: ''};
+    CAPABILITIES = {browserName: ''};
 } else {
     WEB_DRIVER_SERVER_URL = 'http://localhost:4444/wd/hub';
-    CAPABILITES = webdriver.Capabilities.chrome();
+    CAPABILITIES = webdriver.Capabilities.chrome();
+
+    // for example
+    /*
+     CAPABILITIES.set('chromeOptions', {
+         mobileEmulation: {
+             deviceName: 'Apple iPhone 6'
+         }
+     });
+     */
+
 }
+
+// return;
 
 describe('Tests', function () {
 
@@ -36,11 +48,12 @@ describe('Tests', function () {
 
     beforeEach(() => {
             browser = new webdriver
-
                 .Builder()
                 .usingServer(WEB_DRIVER_SERVER_URL)
-                .withCapabilities(CAPABILITES)
+                .withCapabilities(CAPABILITIES)
                 .build();
+
+            // browser.manage().window().setSize(1024, 768);
 
             browser.manage().deleteAllCookies();
 
@@ -55,12 +68,12 @@ describe('Tests', function () {
     describe('Gmail logins', () => {
 
         mailList
-/*
-            .filter((mailData, i) => {
-                let mailList = ['mikka.salonen88@gmail.com', 'mila.yovo1989@gmail.com'];
-                return mailList.indexOf(mailData.mail) !== -1 || 1;
-            })
-*/
+        /*
+         .filter((mailData, i) => {
+             let mailList = ['mikka.salonen88@gmail.com', 'mila.yovo1989@gmail.com'];
+             return mailList.indexOf(mailData.mail) !== -1;
+         })
+         */
             .forEach(mailData => {
 
                 it('Gmail login for ' + mailData.mail, done => {
@@ -85,7 +98,7 @@ describe('Tests', function () {
                     browser.get(G_MAIL_LOGIN.URL_G_MAIL);
 
                     browser.takeScreenshot()
-                        .then(image => util.writeImage(mailData.mail, image))
+                        .then(image => util.writeScreenshot(mailData.mail, image))
                         .then(done);
 
                 });
