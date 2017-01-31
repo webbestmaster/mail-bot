@@ -26,6 +26,20 @@ describe('Tests', function () {
 
     describe('Gmail login', () => {
 
+        /* example BEGIN */
+        let runs = [
+            {it: 'options 1', options: {}},
+            {it: 'options 2', options: {}},
+        ];
+
+        runs.forEach(function (run) {
+            it('does sth with ' + run.it, done => {
+                console.log('nice!!!');
+                setTimeout(done, 5e3);
+            });
+        });
+        /* example END */
+
         it('Gmail login', done => {
 
             browser.manage().deleteAllCookies();
