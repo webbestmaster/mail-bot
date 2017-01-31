@@ -1,0 +1,22 @@
+{
+  "name": "mail-bot",
+  "version": "1.0.0",
+  "description": "Mail-Bot",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webbestmaster/mail-bot.git"
+  },
+  "author": "webBestMaster",
+  "license": "GNU GENERAL PUBLIC LICENSE",
+  "bugs": {
+    "url": "https://github.com/webbestmaster/mail-bot/issues"
+  },
+  "homepage": "https://github.com/webbestmaster/mail-bot#readme",
+  "devDependencies": {
+    "selenium-webdriver": "^3.0.1"
+  }
+}
