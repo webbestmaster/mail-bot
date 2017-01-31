@@ -46,23 +46,25 @@ describe('Tests', function () {
 
     let browser;
 
-    beforeEach(() => {
+    beforeEach(done => {
             browser = new webdriver
                 .Builder()
                 .usingServer(WEB_DRIVER_SERVER_URL)
                 .withCapabilities(CAPABILITIES)
                 .build();
 
-            // browser.manage().window().setSize(1024, 768);
+            browser.manage().window().setSize(1024, 768);
 
-            browser.manage().deleteAllCookies();
+            browser.manage().deleteAllCookies()
+                .then(done);
 
         }
     );
 
-    afterEach(() => {
+    afterEach(done => {
         browser.manage().deleteAllCookies();
-        browser.quit();
+        browser.quit()
+            .then(done);
     });
 
     describe('Gmail logins', () => {
