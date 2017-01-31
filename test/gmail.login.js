@@ -1,75 +1,80 @@
 /*global describe, it, beforeEach, afterEach */
 
 "use strict";
+const mailList = require('./../data/mails.json');
+const util = require('./../data/util');
 
-let SERVER_URL = 'https://accounts.google.com/';
+const CONSTANT = require('./../data/constant');
+let G_MAIL_LOGIN = CONSTANT.G_MAIL_LOGIN;
+
+let SERVER_URL = G_MAIL_LOGIN.URL_LOGIN;
 let WEB_DRIVER_SERVER_URL = 'http://localhost:4444/wd/hub';
 
 describe('Tests', function () {
 
     // each test should be less than 5s
-    this.timeout(500e3);
+    this.timeout(250e3);
 
     let browser;
     let webdriver = require('selenium-webdriver');
     let until = webdriver.until;
     let byCss = webdriver.By.css;
 
-    beforeEach(() => browser = new webdriver
-        .Builder()
-        .usingServer(WEB_DRIVER_SERVER_URL)
-        .withCapabilities(webdriver.Capabilities.chrome())
-        .build()
-    );
-
-    afterEach(() => browser.quit());
-
-    describe('Gmail login', () => {
-
-        /* example BEGIN */
-        let runs = [
-            {it: 'options 1', options: {}},
-            {it: 'options 2', options: {}},
-        ];
-
-        runs.forEach(function (run) {
-            it('does sth with ' + run.it, done => {
-                console.log('nice!!!');
-                setTimeout(done, 5e3);
-            });
-        });
-        /* example END */
-
-        it('Gmail login', done => {
+    beforeEach(() => {
+            browser = new webdriver
+                .Builder()
+                .usingServer(WEB_DRIVER_SERVER_URL)
+                .withCapabilities(webdriver.Capabilities.chrome())
+                .build();
 
             browser.manage().deleteAllCookies();
 
-            browser.get(SERVER_URL);
+        }
+    );
 
-            browser.findElement(byCss('#Email')).sendKeys('ivan.lunin86@gmail.com');
-            browser.findElement(byCss('#next')).click();
+    afterEach(() => {
+        browser.manage().deleteAllCookies();
+        browser.quit();
+    });
 
-            let passwordLocator = byCss('#Passwd');
+    describe('Gmail logins', () => {
 
-            // check element is localed (exist on page)
-            browser.wait(until.elementLocated(passwordLocator), 1e3, 'Could not locate the child element within the time specified');
+        mailList.filter(mailData => {
 
-            // check element is displayed on page
-            browser.wait(browser.findElement(passwordLocator).isDisplayed(), 1000);
+            let mailList = ['mikka.salonen88@gmail.com', 'mila.yovo1989@gmail.com'];
 
-            browser.findElement(passwordLocator).sendKeys('qwertyivan');
-            browser.findElement(byCss('#signIn')).click();
-            browser.get('https://mail.google.com/');
+            return mailList.indexOf(mailData.mail) !== -1 || 1;
 
-            browser.takeScreenshot().then(
-                function(image, err) {
-                    require('fs').writeFile('out.png', image, 'base64', function(err) {
-                        console.log(err);
-                    });
-                }
-            );
+        }).forEach(mailData => {
 
-        });
+            it('Gmail login for ' + mailData.mail, done => {
+
+                browser.manage().deleteAllCookies();
+
+                browser.get(SERVER_URL);
+
+                browser.findElement(byCss(G_MAIL_LOGIN.INPUT_E_MAIL)).sendKeys(mailData.mail);
+                browser.findElement(byCss(G_MAIL_LOGIN.BTN_NEXT)).click();
+
+                let passwordLocator = byCss(G_MAIL_LOGIN.INPUT_PASSWORD);
+
+                // check element is localed (exist on page)
+                browser.wait(until.elementLocated(passwordLocator), 1e3, 'Could not locate the child element within the time specified');
+
+                // check element is displayed on page
+                browser.wait(browser.findElement(passwordLocator).isDisplayed(), 1000);
+
+                browser.findElement(passwordLocator).sendKeys(mailData.password);
+                browser.findElement(byCss(G_MAIL_LOGIN.BTN_SING_IN)).click();
+                browser.get(G_MAIL_LOGIN.URL_G_MAIL);
+
+                browser.takeScreenshot()
+                    .then(image => util.writeImage(mailData.mail, image))
+                    .then(done);
+
+            });
+
+        })
 
     });
 
