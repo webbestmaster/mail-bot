@@ -70,12 +70,11 @@ describe('Tests', function () {
     describe('Gmail logins', () => {
 
         mailList
-        /*
          .filter((mailData, i) => {
-             let mailList = ['mikka.salonen88@gmail.com', 'mila.yovo1989@gmail.com'];
-             return mailList.indexOf(mailData.mail) !== -1;
+            return i >=  mailList.length - 2;
+            // let mailList = ['mikka.salonen88@gmail.com', 'mila.yovo1989@gmail.com'];
+            //  return mailList.indexOf(mailData.mail) !== -1;
          })
-         */
             .forEach(mailData => {
 
                 it('Gmail login for ' + mailData.mail, done => {
